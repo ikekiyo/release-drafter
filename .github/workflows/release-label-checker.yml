@@ -22,13 +22,9 @@ jobs:
           APPROVALS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '[.reviews[] | select(.state=="APPROVED")] | length')
           echo "approve_count=$APPROVALS" >> $GITHUB_OUTPUT
           echo "approvals=$APPROVALS"
-
-          # 2アプルーブない場合は余計な通知を避けるため終了する
-          if [ $APPROVALS -lt 2 ]; then
-            exit 0
-          fi
       - name: Check labels
         id: check-label
+        if: steps.approval-check.outputs.approvals >= 2
         run: |
           REQUIRED_LABELS=("feature" "enhancement" "fix" "bugfix" "bug" "accessibility" "test" "refactoring" "other")
           PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json labels --jq '.labels[].name')
@@ -45,7 +41,7 @@ jobs:
           echo "label_found=$LABEL_FOUND" >> $GITHUB_OUTPUT
           echo "label_found=$LABEL_FOUND"
       - name: Comment if no label
-        if: steps.check-label.outputs.label_found == 'false'
+        if: steps.approval-check.outputs.approvals >= 2 && steps.check-label.outputs.label_found == 'false'
         run: |
           gh pr comment $NUMBER --body-file ".github/release-type.md" --repo ${{ github.repository }}
           exit 1
