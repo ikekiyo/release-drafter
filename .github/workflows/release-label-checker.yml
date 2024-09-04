@@ -2,7 +2,9 @@ name: Release Label Checker
 
 on:
   pull_request:
-    types: [edited, labeled, unlabeled]
+    types: [labeled, unlabeled]
+  pull_request_review:
+    types: [submitted]
 jobs:
   commented-auto-labeler:
     permissions:
@@ -26,10 +28,21 @@ jobs:
         id: check-label
         if: steps.approval-check.outputs.approvals >= 2
         run: |
-          REQUIRED_LABELS=("feature" "enhancement" "fix" "bugfix" "bug" "accessibility" "test" "refactoring" "other")
+          REQUIRED_LABELS=(
+            "feature"
+            "enhancement"
+            "fix"
+            "bugfix"
+            "bug"
+            "accessibility"
+            "test"
+            "refactoring"
+            "other"
+          )
           PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json labels --jq '.labels[].name')
           echo "pr_labels=${PR_LABELS}" >> $GITHUB_OUTPUT
 
+          # リリースタイプのラベルが1つでも付いているか確認
           LABEL_FOUND=false
           for label in "${REQUIRED_LABELS[@]}"; do
             if echo "$PR_LABELS" | grep -q "$label"; then
