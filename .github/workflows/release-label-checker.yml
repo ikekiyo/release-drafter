@@ -41,9 +41,9 @@ jobs:
       - name: Debug output
         run: |
           echo "Label found: ${{ steps.check-label.outputs.label_found }}"
-          echo "Label check: ${{ steps.check-label.outputs.label_found == false }}"
+          echo "Label check: ${{ steps.check-label.outputs.label_found == 'false' }}"
       - name: Comment if no label
-        if: steps.check-label.outputs.label_found == false
+        if: steps.check-label.outputs.label_found == 'false'
         run: |
           gh pr comment $NUMBER --body-file ".github/release-type.md" --repo ${{ github.repository }}
           exit 1
