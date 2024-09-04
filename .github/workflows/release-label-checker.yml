@@ -38,10 +38,6 @@ jobs:
 
           echo "label_found=$LABEL_FOUND" >> $GITHUB_OUTPUT
           echo $LABEL_FOUND
-      - name: Debug output
-        run: |
-          echo "Label found: ${{ steps.check-label.outputs.label_found }}"
-          echo "Label check: ${{ steps.check-label.outputs.label_found == 'false' }}"
       - name: Comment if no label
         if: steps.check-label.outputs.label_found == 'false'
         run: |
