@@ -38,9 +38,8 @@ jobs:
 
           echo "label_found=$LABEL_FOUND" >> $GITHUB_OUTPUT
           echo $LABEL_FOUND
-      # ラベルがついていない場合にコメントでアラートする
       - name: Comment if no label
         if: steps.check-label.outputs.label_found == false
-        # if: steps.approval-check.outputs.approve_count >= 2 && steps.check-label.outputs.label_found == false
         run: |
           gh pr comment $NUMBER --body-file ".github/release-type.md" --repo ${{ github.repository }}
+          exit 1
