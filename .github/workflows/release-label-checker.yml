@@ -2,7 +2,7 @@ name: Release Label Checker
 
 on:
   pull_request:
-    types: [edited]
+    types: [edited, labeled, unlabeled]
 jobs:
   commented-auto-labeler:
     permissions:
