@@ -1,0 +1,46 @@
+name: Release Label Checker
+
+on:
+  pull_request:
+    types: [edited]
+jobs:
+  commented-auto-labeler:
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: read
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check approval count
+        id: approval-check
+        run: |
+          APPROVALS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '[.reviews[] | select(.state=="APPROVED")] | length')
+          echo "approve_count=$APPROVALS" >> $GITHUB_OUTPUT
+      - name: Check labels
+        id: check-label
+        run: |
+          REQUIRED_LABELS=("feature" "enhancement" "fix" "bugfix" "bug" "accessibility" "test" "refactoring" "other")
+          PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --json labels --jq '.labels[].name')
+          echo "pr_labels=${PR_LABELS}" >> $GITHUB_OUTPUT
+
+          LABEL_FOUND=false
+          for label in "${REQUIRED_LABELS[@]}"; do
+            if echo "$PR_LABELS" | grep -q "$label"; then
+              LABEL_FOUND=true
+              break
+            fi
+          done
+
+          echo "label_found=$LABEL_FOUND" >> $GITHUB_OUTPUT
+          echo $LABEL_FOUND
+      # ラベルがついていない場合にコメントでアラートする
+      - name: Comment if no label
+        if: steps.check-label.outputs.label_found == false
+        # if: steps.approval-check.outputs.approve_count >= 2 && steps.check-label.outputs.label_found == false
+        run: |
+          gh pr comment $NUMBER --body-file ".github/release-type.md" --repo ${{ github.repository }}
