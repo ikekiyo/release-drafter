@@ -21,6 +21,7 @@ jobs:
         run: |
           APPROVALS=$(gh pr view ${{ github.event.pull_request.number }} --json reviews --jq '[.reviews[] | select(.state=="APPROVED")] | length')
           echo "approve_count=$APPROVALS" >> $GITHUB_OUTPUT
+          echo "approvals=$APPROVALS"
 
           # 2アプルーブない場合は余計な通知を避けるため終了する
           if [ $APPROVALS -lt 2 ]; then
@@ -42,7 +43,7 @@ jobs:
           done
 
           echo "label_found=$LABEL_FOUND" >> $GITHUB_OUTPUT
-          echo $LABEL_FOUND
+          echo "label_found=$LABEL_FOUND"
       - name: Comment if no label
         if: steps.check-label.outputs.label_found == 'false'
         run: |
