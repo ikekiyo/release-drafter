@@ -9,14 +9,14 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Get current date
         id: date
         run: |
           # JSTの日付を取得
           export TZ=JST-9
-          DATETIME=$(date +"%Y%m%d %H:%M")
+          DATETIME=$(date +"%Y-%m-%d %H:%M")
           echo "date=$DATETIME" >> $GITHUB_OUTPUT
       - uses: release-drafter/release-drafter@v6.0.0
         env:
