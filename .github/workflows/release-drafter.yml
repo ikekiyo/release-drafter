@@ -19,6 +19,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           commitish: develop
-          config-name: .github/release-type.yml
+          config-name: release-type.yml
           tag: "${{ steps.date.outputs.date }}"
           name: ${{ steps.date.outputs.date }}
