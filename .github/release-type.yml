@@ -1,0 +1,27 @@
+categories:
+  - title: '🚀 改善'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 不具合修正'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '🌈 アクセシビリティ'
+    labels:
+      - 'accessibility'
+  - title: '🛠️ メンテナンス'
+    labels:
+      - 'test'
+      - 'refactoring'
+  - title: 'その他'
+    labels:
+      - 'other'
+change-template: |
+  $TITLE @$AUTHOR
+  $URL
+
+template: |
+  ## リリース内容
+  $CHANGES
