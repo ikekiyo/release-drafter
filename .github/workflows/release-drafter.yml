@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commitish: staging
+          commitish: develop
           config-name: release-type.yml
           tag: ${{ steps.date.outputs.tag }}
           name: ${{ steps.date.outputs.name }}
