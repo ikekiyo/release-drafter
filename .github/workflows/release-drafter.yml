@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
+      - release-note
 jobs:
-  update_release_draft:
+  create_release_note:
     permissions:
       contents: write
       pull-requests: read
@@ -14,15 +15,14 @@ jobs:
       - name: Get current date
         id: date
         run: |
-          # JSTの日付を取得
           export TZ=JST-9
-          DATETIME=$(date +"%Y-%m-%d %H:%M")
-          echo "date=$DATETIME" >> $GITHUB_OUTPUT
+          echo "name=$(date +"%Y-%m-%d_%H:%M")" >> $GITHUB_OUTPUT
+          echo "tag=$(date +"%Y%m%d%H%M")" >> $GITHUB_OUTPUT
       - uses: release-drafter/release-drafter@v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commitish: develop
+          commitish: staging
           config-name: release-type.yml
-          tag: ${{ steps.date.outputs.date }}
-          name: ${{ steps.date.outputs.date }}
+          tag: ${{ steps.date.outputs.tag }}
+          name: ${{ steps.date.outputs.name }}
