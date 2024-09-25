@@ -58,3 +58,19 @@ jobs:
         run: |
           gh pr comment $NUMBER --body-file ".github/release-type.md" --repo ${{ github.repository }}
           exit 1
+  ignore-release-label:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-24.04
+    if: |
+      !github.event.pull_request.draft &&
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.base.ref != 'staging'
+    steps:
+      - name: Add ignore release label
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr edit $NUMBER --add-label "release_ignore" --repo ${{ github.repository }}
