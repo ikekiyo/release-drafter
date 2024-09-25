@@ -2,7 +2,7 @@ name: Add Exclude Release Label
 
 on:
   pull_request:
-    types: [edited]
+    types: [opened, edited]
 jobs:
   add_exclude_release_label:
     permissions:
