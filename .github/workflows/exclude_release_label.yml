@@ -1,0 +1,22 @@
+name: Add Exclude Release Label
+
+on:
+  pull_request:
+    types: [edited]
+jobs:
+  add_exclude_release_label:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Add ignore release label
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ ${{ github.event.pull_request.draft }} == false ] && [ ${{ github.event.pull_request.base.ref }} != 'staging' ]; then
+            gh pr edit $NUMBER --add-label "release_ignore" --repo ${{ github.repository }}
+          else
+            gh pr edit $NUMBER --remove-label "release_ignore" --repo ${{ github.repository }} 
+          fi
