@@ -15,7 +15,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          if [ ${{ github.event.pull_request.draft }} == false ] && [ ${{ github.event.pull_request.base.ref }} != 'staging' ]; then
+          if [ ${{ github.event.pull_request.draft }} == false ] && [ ${{ github.event.pull_request.base.ref }} != 'develop' ]; then
             gh pr edit $NUMBER --add-label "release_ignore" --repo ${{ github.repository }}
           else
             gh pr edit $NUMBER --remove-label "release_ignore" --repo ${{ github.repository }} 
